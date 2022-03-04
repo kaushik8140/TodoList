@@ -59,6 +59,7 @@ export default function SignupScreen({navigation}) {
     setErrorUsername(false);
 
     dispatch(signupUser(email, password));
+    navigation.navigate('LoginScreen');
   };
 
   return (

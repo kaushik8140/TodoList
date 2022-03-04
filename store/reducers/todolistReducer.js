@@ -1,4 +1,3 @@
-
 const initialState = {
   todos: ['Learn React', 'Learn Redux', 'Learn Firebase', 'Learn Graphql']
 };
@@ -8,13 +7,20 @@ const todolistReducer = (state = initialState, action) => {
     case "ADD":
       return {
         ...state,
-        todos: [action.todo, ...state.todos]
+        todos: [...state.todos,action.todo],
+       
       };
     case "REMOVE":
       return {
         ...state,
         todos: state.todos.filter((todo, i) => i !== action.index)
       };
+
+      case "UPDATE":
+        return {
+         todos:action.todos
+          
+        };
     default:
       return state;
   }
