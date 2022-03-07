@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {View, Image, ScrollView, Text} from 'react-native';
 import {connect} from 'react-redux';
 import {styles} from './styles';
-import {Add, Remove, Update} from '../../../store/actions/todolist/actions';
+import {Add, Remove} from '../../../store/actions/todolist/actions';
 import firestore from '@react-native-firebase/firestore';
 import {TodolistInput} from './todolistInput';
 import {TodoListItems} from './todolistIem';
@@ -15,44 +15,47 @@ class TodoList extends React.Component {
     super(props);
     this.state = {
       getValue: '',
+      newarray:[],
     };
   }
 
   onAddTodo = async text => {
     const uid = await AsyncStorage.getItem('Session_uid');
-    this.props.onAdd(uid, text);
+    this.props.onAdd(uid, text, this.props.todos);
   };
 
   onRemoveTodo = async index => {
     const uid = await AsyncStorage.getItem('Session_uid');
-    this.props.onRemove(uid, index);
+    this.props.onRemove(uid, index, this.props.todos);
   };
 
-  onUpdateTodo = index => this.props.onUpdate(this.props.user.uid, index);
   onButtonPressLogout = async () => {
     await AsyncStorage.clear();
     this.props.logout();
-
     console.log('logout');
   };
- 
+
   componentDidMount() {
-    this.usersCollection;
-    AsyncStorage.getItem('Session_uid').then(value =>
-      this.setState({getValue: value}),
-    );
+    AsyncStorage.getItem('Session_uid').then(value => {
+      this.setState({getValue: value});
+
+      // GET DATA FROM FIREBASE SERVER
+
+      firestore()
+        .collection('users')
+        .doc(this.state.getValue)
+        .get()
+        .then(data => {
+          this.setState({newarray:data.data()})
+          console.log('Total users:>>>>>>>>>>>>>>>> ', data.data());
+          // console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",this.state.newarray)
+        });
+    });
+   
   }
 
   render() {
     const {todos} = this.props;
-    const userid = this.state.getValue;
-    usersCollection = firestore()
-      .collection('users')
-      .doc(userid)
-      .get()
-      .then(data => {
-        console.log('Total users: ', data.data());
-      });
 
     return (
       <ScrollView>
@@ -62,11 +65,7 @@ class TodoList extends React.Component {
             onSubmitEditing={this.onAddTodo}
           />
 
-          <TodoListItems
-            list={todos}
-            onPressItem={this.onRemoveTodo}
-            onPressEdit={this.onUpdateTodo}
-          />
+          <TodoListItems list={todos} onPressItem={this.onRemoveTodo} />
           <View style={{alignItems: 'center'}}>
             <FormButton
               title={'LOGOUT'}
@@ -74,6 +73,7 @@ class TodoList extends React.Component {
               onPress={this.onButtonPressLogout}
             />
             <Text>{this.state.getValue}</Text>
+            {/* <Text>{this.state.newarray}</Text> */}
           </View>
         </View>
       </ScrollView>
@@ -89,10 +89,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
   onAdd: Add,
   onRemove: Remove,
-  onUpdate: Update,
   logout: logoutUser,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TodoList);
-
-// onAddTodo = text => this.props.onAdd(this.props.user.uid, text);

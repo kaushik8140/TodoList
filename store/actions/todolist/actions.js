@@ -1,46 +1,40 @@
 import firestore from '@react-native-firebase/firestore';
 
+export const Add = (uid, item, todos) => dispatch => {
+  const previtems = [...todos];
 
-export const Add = (uid, item) => dispatch => {
   firestore()
     .collection('users')
     .doc(uid)
     .set({
-      todos: [item],
-      
+      todos: [...previtems, item],
     })
     .then(() => {
       console.log('User added set method!');
-    console.log("uid from action screen",uid)
+      console.log('uid from action screen', uid);
 
       dispatch(add(item));
     });
-
 };
 
+export const Remove = (uid, index, todos) => dispatch => {
+  const clonedArray = [...todos];
 
-export const Update = (uid,updatedTodo) => dispatch => {
-  const newArray = [];
+  clonedArray.splice(index, 1);
+
+  console.log('old Dala : ', todos);
+
+  console.log('new Dala : ', clonedArray);
+
   firestore()
     .collection('users')
     .doc(uid)
     .update({
-      todos: newArray,
+      todos: clonedArray,
     })
     .then(() => {
-      dispatch(update(updatedTodo));
-      console.log('User added!');
-    });
-};
-
-export const Remove = (uid, index) => dispatch => {
-  firestore()
-    .collection('users')
-    .doc(uid)
-    .delete()
-    .then(() => {
       dispatch(remove(index));
-      console.log('User deleted!');
+      console.log('User added!');
     });
 };
 
@@ -52,9 +46,4 @@ export const add = item => ({
 export const remove = index => ({
   type: 'REMOVE',
   index: index,
-});
-
-export const update = updatedTodo => ({
-  type: 'UPDATE',
-  index: updatedTodo,
 });
