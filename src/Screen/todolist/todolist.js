@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
-import {View, Image, ScrollView, Text} from 'react-native';
+import {View, Image, ScrollView, Text, InteractionManager} from 'react-native';
 import {connect} from 'react-redux';
 import {styles} from './styles';
-import {Add, Remove} from '../../../store/actions/todolist/actions';
-import firestore from '@react-native-firebase/firestore';
+import {Add, Remove, Firstget} from '../../../store/actions/todolist/actions';
 import {TodolistInput} from './todolistInput';
 import {TodoListItems} from './todolistIem';
 import FormButton from '../../CustomComponent/FormButtom';
@@ -15,7 +14,6 @@ class TodoList extends React.Component {
     super(props);
     this.state = {
       getValue: '',
-      newarray:[],
     };
   }
 
@@ -33,25 +31,16 @@ class TodoList extends React.Component {
     await AsyncStorage.clear();
     this.props.logout();
     console.log('logout');
+    
   };
 
   componentDidMount() {
-    AsyncStorage.getItem('Session_uid').then(value => {
-      this.setState({getValue: value});
-
-      // GET DATA FROM FIREBASE SERVER
-
-      firestore()
-        .collection('users')
-        .doc(this.state.getValue)
-        .get()
-        .then(data => {
-          this.setState({newarray:data.data()})
-          console.log('Total users:>>>>>>>>>>>>>>>> ', data.data());
-          // console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",this.state.newarray)
-        });
+    InteractionManager.runAfterInteractions(() => {
+      AsyncStorage.getItem('Session_uid').then(value => {
+        this.setState({getValue: value});
+        this.props.onFirst(value);
+      });
     });
-   
   }
 
   render() {
@@ -73,7 +62,6 @@ class TodoList extends React.Component {
               onPress={this.onButtonPressLogout}
             />
             <Text>{this.state.getValue}</Text>
-            {/* <Text>{this.state.newarray}</Text> */}
           </View>
         </View>
       </ScrollView>
@@ -87,6 +75,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
+  onFirst: Firstget,
   onAdd: Add,
   onRemove: Remove,
   logout: logoutUser,

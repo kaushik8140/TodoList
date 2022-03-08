@@ -1,4 +1,3 @@
-// import AsyncStorage from '@react-native-async-storage/async-storage'
 const initialState = {
   restoring: false,
   loading: false,
@@ -12,8 +11,7 @@ const sessionReducer = (state = initialState, action) => {
   switch (action.type) {
     case 'SESSION_SUCCESS':
       console.log('getting session data : ', action.user);
-      // AsyncStorage.setItem('Session_uid',action.user.uid);
-      // console.log('getting session data uid : ', action.user.uid);
+    
       return {
         ...state,
         restoring: false,

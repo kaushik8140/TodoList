@@ -7,7 +7,7 @@ export class TodoListItems extends React.Component {
     const {onPressItem, onPressEdit} = this.props;
 
     return (
-      <View style={styles.item}>
+      <View key={"todo_item" + i} style={styles.item}>
         <Text style={styles.text}>{text}</Text>
 
         <TouchableOpacity onPress={() => onPressItem(i)} key={i}>

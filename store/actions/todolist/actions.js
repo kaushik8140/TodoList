@@ -1,5 +1,20 @@
 import firestore from '@react-native-firebase/firestore';
 
+
+export const Firstget = (uid) => dispatch => {
+  console.log("my first uid ", uid);
+  firestore()
+  .collection('users')
+  .doc(uid)
+  .get()
+  .then(data => {
+    console.log('Total users:>>>>>>>>>>>>>>>> ', data.data());
+    dispatch(firstget(data.data().todos));
+   });
+};
+
+
+
 export const Add = (uid, item, todos) => dispatch => {
   const previtems = [...todos];
 
@@ -14,6 +29,7 @@ export const Add = (uid, item, todos) => dispatch => {
       console.log('uid from action screen', uid);
 
       dispatch(add(item));
+     
     });
 };
 
@@ -38,12 +54,20 @@ export const Remove = (uid, index, todos) => dispatch => {
     });
 };
 
+export const firstget = data => ({
+  type: 'FIRSTGET',
+  todo: data, 
+});
+
 export const add = item => ({
   type: 'ADD',
-  todo: item,
+  todo: item, 
 });
 
 export const remove = index => ({
   type: 'REMOVE',
   index: index,
 });
+
+
+

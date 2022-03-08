@@ -51,10 +51,10 @@ const sessionSuccess = user => ({
   user,
 });
 
-const signupSuccess = user => ({
-  type: 'SIGNUP_SUCCESS',
-  user,
-});
+// const signupSuccess = user => ({
+//   type: 'SIGNUP_SUCCESS',
+//   user,
+// });
 
 const sessionLogout = () => ({
   type: 'SESSION_LOGOUT',

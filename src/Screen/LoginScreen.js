@@ -39,7 +39,7 @@ export default function LoginScreen({navigation}) {
     setErrorEmail(false);
     setErrorPassword(false);
     dispatch(loginUser(email, password));
-    // navigation.navigate('HomeScreen');
+    
   };
 
   return (

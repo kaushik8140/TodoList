@@ -11,7 +11,6 @@ import {
 import FormButton from '../CustomComponent/FormButtom';
 import FormInput from '../CustomComponent/FormInput';
 import {useDispatch} from 'react-redux';
-// import { Signup } from '../../store/actions';
 import {signupUser} from '../../store/actions/session/actions';
 
 export default function SignupScreen({navigation}) {
@@ -147,7 +146,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     backgroundColor: '#fff',
     alignItems: 'center',
-    // justifyContent: 'center',
   },
 
   image: {
